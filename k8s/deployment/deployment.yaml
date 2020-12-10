@@ -18,7 +18,7 @@ spec:
         app: mean-demo
     spec:
       containers:
-        - image: abhisamant7/node-web-app:latest
+        - image: 766838600382.dkr.ecr.us-west-1.amazonaws.com/dfarm
           imagePullPolicy: Always
           name: mean-demo
           ports:
