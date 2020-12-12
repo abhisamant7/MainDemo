@@ -1,4 +1,5 @@
 kubectl apply -f deployment.yaml
+kubectl delete -f deployment.yaml
 
 kubectl apply -f service.yaml
 
