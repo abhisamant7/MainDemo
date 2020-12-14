@@ -13,7 +13,7 @@ spec:
         app: api-service
     spec:
        imagePullSecrets:
-       - name: api-deployment-token
+       - name: api-deployment-tokengit
        containers:
        - name: api-service
          image: registry.gitlab.com/a.samanta/demodocker:latest
