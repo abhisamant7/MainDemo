@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: api-service
+    app.kubernetes.io/instance: api-service-instance
+    app.kubernetes.io/version: '1.0.0'
+    app.kubernetes.io/managed-by: kubectl
+  name: api-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-service
+  template:
+    metadata:
+      labels:
+        run: api-service
+    spec:
+      containers:
+        - image: registry.gitlab.com/a.samanta/demodocker:latest
+          imagePullPolicy: Always
+          name: api-service
+      imagePullSecrets:
+        - name: api-service-deployment-token
+          ports:
+            - containerPort: 3000
