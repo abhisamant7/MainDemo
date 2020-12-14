@@ -6,14 +6,18 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      run: api-service
+      app: api-service
   template:
     metadata:
       labels:
-        run: api-service
+        app: api-service
     spec:
-      containers:
-        - name: api-service
-          image: registry.gitlab.com/a.samanta/demodocker:latest
-      imagePullSecrets:
-        - name: api-service-deployment-tokengitlab
+       imagePullSecrets:
+       - name: api-service-deployment-tokengit
+       containers:
+       - name: api-service
+         image: registry.gitlab.com/a.samanta/demodocker:latest
+         imagePullPolicy: Always
+         ports:
+           - containerPort: 3000
+
