@@ -21,7 +21,8 @@ spec:
         - image: registry.gitlab.com/a.samanta/demodocker:latest
           imagePullPolicy: Always
           name: api-service
-      imagePullSecrets:
-        - name: api-service-deployment-token
           ports:
             - containerPort: 3000
+      imagePullSecrets:
+        - name: api-service-deployment-token
+
