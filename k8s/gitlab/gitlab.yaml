@@ -1,0 +1,46 @@
+variables:
+  DOCKER_DRIVER: overlay2
+  REGISTRY: $CI_REGISTRY
+  IMAGE_TAG: $CI_REGISTRY_IMAGE
+  K8S_DEPLOYMENT_NAME: deployment/$CI_PROJECT_NAME
+  CONTAINER_NAME: $CI_PROJECT_NAME
+
+stages:
+  - build-docker
+  - deploy
+
+
+build-docker:
+  image: docker:latest
+  stage: build-docker
+  services:
+    - docker:dind
+  tags:
+    - privileged
+  only:
+    - Test
+  script:
+    script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $REGISTRY
+    - docker build --network host -t $IMAGE_NAME:$IMAGE_TAG -t $IMAGE_NAME:latest .
+    - docker push $IMAGE_NAME:$IMAGE_TAG
+    - docker push $IMAGE_NAME:latest
+deploy-k8s-(stage):
+  image:
+    name: kubectl:latest
+    entrypoint: [""]
+  stage: deploy
+  tags:
+    - privileged
+  # Optional: Manual gate
+  when: manual
+  dependencies:
+    - build-docker
+  script:
+    - kubectl config set-cluster k8s --server="$CLUSTER_ADDRESS"
+    - kubectl config set clusters.k8s.certificate-authority-data $CA_AUTH_DATA
+    - kubectl config set-credentials gitlab-service-account --token=$K8S_TOKEN
+    - kubectl config set-context default --cluster=k8s --user=gitlab-service-account --namespace=default
+    - kubectl config use-context default
+    - kubectl set image $K8S_DEPLOYMENT_NAME $CI_PROJECT_NAME=$IMAGE_TAG
+    - kubectl rollout restart $K8S_DEPLOYMENT_NAME
